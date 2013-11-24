@@ -6,13 +6,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.ConnectException;
+import java.net.MalformedURLException;
 import java.net.URL;
+
 
 import org.json.*;
 public class AIR_info {
@@ -20,13 +23,43 @@ public class AIR_info {
 	public void download_info(String url , String path)throws IOException, ConnectException
 	{
 	    InputStream is = new URL(url).openConnection().getInputStream();
-	    byte[] buffer = new byte[1024];
+	    
 	   // FileOutputStream fos = new FileOutputStream(path);
-	    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "ASCII"));
-	    for (int length; (length = is.read(buffer)) > 0; writer.write(buffer.toString()));
+	
 	    //fos.close();
-	    writer.close();
+	    /*
+	    StringBuilder inputStringBuilder = new StringBuilder();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+        String line = bufferedReader.readLine();
+        BufferedWriter bw = new BufferedWriter(new FileWriter(path));
+        
+        while(line != null){
+            inputStringBuilder.append(line);inputStringBuilder.append('\n');
+            line = bufferedReader.readLine();
+            if(line != null)
+            bw.write(line);
+        }
+        bw.flush();
+        bw.close();   
+	    
 	    is.close();
+	    */
+	    try {
+            
+            BufferedReader in = new BufferedReader(new InputStreamReader((new URL(url).openStream()), "UTF-8"));
+            BufferedWriter out = new BufferedWriter(new FileWriter(path));
+            char[] cbuf=new char[255];
+            while ((in.read(cbuf)) != -1) {
+                out.write(cbuf);
+            }
+            in.close();
+            out.close();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 	    System.out.println("download finish");
 	    
 	}
