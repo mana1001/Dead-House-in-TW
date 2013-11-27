@@ -1,3 +1,9 @@
+/*
+READ ME 
+	execute: Run as Junit test
+	test for down load data
+ */
+
 package d_place;
 
 import static org.junit.Assert.*;
