@@ -18,7 +18,7 @@ public class d_place {
 		//set the new file save path
 		String air_path = "C:/Users/Timuncle/Desktop/AIR_info.json";
 		//create a new object
-		AIR_info air = new AIR_info();
+		AIR_info air = AIR_info.getObject();
 		//download the air information
 		air.download_info(air_url , air_path);
 		//air.show_info(air_path);

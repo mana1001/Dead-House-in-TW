@@ -23,8 +23,13 @@ import java.util.Map;
 import org.json.*;
 public class AIR_info {
 
+	private static AIR_info current_air_info = new AIR_info();
 	//all air information <Date , Local , PSI>
 	private Map<String, HashMap<String, Integer>> air_info;
+	//
+	public static AIR_info getObject() { 
+        return current_air_info; 
+    }
 	//class construction
 	AIR_info()
 	{
