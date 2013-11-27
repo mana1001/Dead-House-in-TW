@@ -45,8 +45,7 @@ public class AIR_info {
 	//download air information json file
 	public void download_info(String url , String path)throws IOException, ConnectException
 	{
-		//download air_info.json with url
-	    InputStream is = new URL(url).openConnection().getInputStream();
+
 	    try {
             //use bufferedrwader get buffer length and get the json with UTF-8
             BufferedReader in = new BufferedReader(new InputStreamReader((new URL(url).openStream()), "UTF-8"));
@@ -55,9 +54,9 @@ public class AIR_info {
             char[] cbuf=new char[255];
             //get data and write data
             for (int length; (length = in.read(cbuf)) > 0; out.write(cbuf, 0, length));
+            //close reader and writer
             in.close();
             out.close();
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
