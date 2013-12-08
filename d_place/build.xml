@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="junitsuiteexample" default="testsuite">
+<project name="junitsuiteexample" default="report">
 
  <property name="project.name" value="junitsuiteexample"/>
  <property name="src.dir" value="src"/>  
@@ -45,9 +45,17 @@
        <sysproperty key="ant.home" value="${ant.home}"/>
        <formatter type="xml"/>
        <batchtest fork="yes" todir="${junit.out.dir.xml}">
-         <fileset dir="${classes.dir}" includes="**/AllTests.class"/>
+         <fileset dir="${src.dir}" includes="**/**test*.java"/>
        </batchtest>
     </junit>
   </target>
+	<target name = "report" depends="testsuite">
+		<junitreport todir="${junit.out.dir.xml}">
+			<fileset dir="${junit.out.dir.xml}/">
+				<include name="TEST-*.xml"/>
+			</fileset>
+			<report format="frames" todir="${junit.out.dir.html}"/>
+		</junitreport>
+	</target>
 
 </project>

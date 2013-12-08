@@ -6,6 +6,8 @@ READ ME
  */
 package d_place;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.net.ConnectException;
 
