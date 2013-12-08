@@ -1,12 +1,8 @@
 //we use the Design Pattern : Singleton
-//大概會用到的class 有 空氣資訊 , 水質資訊 , 和 死因  分開寫在3個不同的class中
-//只要資訊更新和取得資訊都會在這3個lcass中進行
-//而這3個class在這個project是獨一無二的
+
 package d_place;
 
 import java.io.IOException;
-import java.net.ConnectException;
-
 import org.json.JSONException;
 
 public class d_place {

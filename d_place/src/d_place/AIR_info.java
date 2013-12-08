@@ -31,7 +31,7 @@ public class AIR_info {
         return current_air_info; 
     }
 	//class construction
-	AIR_info()
+	public AIR_info()
 	{
 		air_info = new HashMap<String ,HashMap<String , Integer>>();
 		this.read_info();
