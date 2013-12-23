@@ -8,7 +8,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.*;
@@ -48,7 +47,7 @@ public class AIR_info {
 
 			// connect to database
 			conn = DriverManager.getConnection(DB_URL, USER, PASS);
-			System.out.println("table air_info connected");
+			System.out.println("Team11 database connected");
 
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | SQLException e) {
@@ -63,7 +62,7 @@ public class AIR_info {
 
 			// closed
 			conn.close();
-			System.out.println("table air_info closed");
+			System.out.println("Team11 database closed");
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
@@ -79,6 +78,33 @@ public class AIR_info {
 					(new URL(url).openStream()), "UTF-8"));
 			// write the buffer in json file
 			BufferedWriter out = new BufferedWriter(new FileWriter(path));
+			char[] cbuf = new char[255];
+			// get data and write data
+			for (int length; (length = in.read(cbuf)) > 0; out.write(cbuf, 0,
+					length))
+				;
+			// close reader and writer
+			in.close();
+			out.close();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("download finish");
+
+	}
+
+	// download air location json file
+	public void download_location() {
+		String url = "http://opendata.epa.gov.tw/ws/Data/AQXSite/?$orderby=SiteName&$skip=0&$top=1000&format=json";
+		try {
+			// use bufferedrwader get buffer length and get the json with UTF-8
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					(new URL(url).openStream()), "UTF-8"));
+			// write the buffer in json file
+			BufferedWriter out = new BufferedWriter(new FileWriter(
+					"AIR_location.json"));
 			char[] cbuf = new char[255];
 			// get data and write data
 			for (int length; (length = in.read(cbuf)) > 0; out.write(cbuf, 0,
@@ -121,19 +147,23 @@ public class AIR_info {
 
 	// updata air information in local air data
 	public void updata_air_info() {
+		this.connect_db();
+
 		System.out.println("---begin updata air_info");
 
 		// download json file
 		this.download_info(air_url);
 
-		// read json
+		// air_info json
 		JSONArray air_info_json;
 		JSONObject air_object;
-		
+
 		int new_data = 0;
 		try {
+			// read air_info json
 			air_info_json = new JSONArray(new JSONTokener(new FileReader(
 					new File(path))));
+
 			for (int i = 0; i < air_info_json.length(); i++) {
 				air_object = air_info_json.getJSONObject(i);
 				// find the data is always in table air_info
@@ -151,23 +181,25 @@ public class AIR_info {
 				// hava new data to updata
 				else {
 					String insert_sql = "INSERT INTO air_info VALUES ("
-							+ air_object.getInt("SiteId") + ","
-							+ "'" + air_object.get("SiteName")+ "',"
-							+ "'" + air_object.get("MonitorDate")+ "',"
-							+ air_object.getInt("PSI") + ")";
+							+ air_object.getInt("SiteId") + "," + "'"
+							+ air_object.get("SiteName") + "'," + "'"
+							+ air_object.get("MonitorDate") + "',"
+							+ air_object.get("PSI") + "," + "'"
+							+ this.get_location(air_object.getString("SiteName"))[0] + "'," + "'"
+							+ this.get_location(air_object.getString("SiteName"))[1] + "')";
 					st.executeUpdate(insert_sql);
 					new_data++;
 				}
 				rs.close();
 				st.close();
 			}
-			if(new_data == 0)
+			if (new_data == 0)
 				System.out.println("have not new data to updata");
 			else
 				System.out.println("have " + new_data + " data to updata");
 
 			System.out.println("---finish updata air_info");
-
+			this.close_db();
 		} catch (FileNotFoundException | JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -175,5 +207,29 @@ public class AIR_info {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private String[] get_location(String sitename) {
+		// air_location json
+		JSONArray air_location_array;
+		JSONObject air_location_object;
+		String county[] = new String[2];
+		try {
+			air_location_array = new JSONArray(new JSONTokener(new FileReader(
+					new File("AIR_location.json"))));
+			for (int i = 0; i < air_location_array.length(); i++) {
+				air_location_object = air_location_array.getJSONObject(i);
+				if (sitename.equals(air_location_object.getString("SiteName"))) {
+					county[0] = air_location_object.getString("County");
+					county[1] = air_location_object.getString("Township");
+					return county;
+				}
+			}
+		} catch (FileNotFoundException | JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+
 	}
 }

@@ -3,6 +3,7 @@
 package d_place;
 
 import java.sql.*;
+import java.util.Timer;
 
 public class d_place {
 	//
@@ -10,13 +11,9 @@ public class d_place {
 	{
 		//create a new object
 		AIR_info air = AIR_info.getObject();
-		//connect to table air_info 
-		air.connect_db();
+		WATER_info water = WATER_info.getObject();
 		//updata air_info
-		air.updata_air_info();		
-		//close connect table air_info
-		air.close_db();
-		//air.show_info(air_path);
-		
+		//air.updata_air_info();	
+
 	}
 }
