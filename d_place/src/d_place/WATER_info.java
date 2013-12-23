@@ -20,7 +20,7 @@ public class WATER_info {
 	// path of water_info json file
 	private static String path = "WATER_info.json";
 	// URL of water_info json file
-	String water_url = "http://opendata.epa.gov.tw/ws/Data/WQXDam/?$orderby=SiteName&$skip=0&$top=1000&format=json";
+	String water_url = "http://opendata.epa.gov.tw/ws/Data/WQXDam/?$orderby=SampleDate%20desc&$skip=0&$top=1000&format=json";
 
 	// JDBC driver name and database URL
 	static final String JDBC_DRIVER = "org.postgresql.Driver";
@@ -95,21 +95,21 @@ public class WATER_info {
 
 	}
 
-	// show all air information
+	// show all water information
 	public void show_info(String path) {
 		// read json
-		JSONArray air_info_json;
+		JSONArray water_info_json;
 		try {
-			air_info_json = new JSONArray(new JSONTokener(new FileReader(
+			water_info_json = new JSONArray(new JSONTokener(new FileReader(
 					new File(path))));
 
 			JSONObject air_object;
 			// print all json data
-			for (int i = 0; i < air_info_json.length(); i++) {
-				air_object = air_info_json.getJSONObject(i);
+			for (int i = 0; i < water_info_json.length(); i++) {
+				air_object = water_info_json.getJSONObject(i);
 				System.out.println(air_object.get("SiteName") + "  "
-						+ air_object.get("MonitorDate") + "  "
-						+ air_object.get("PSI"));
+						+ air_object.get("ItemName") + "  "
+						+ air_object.get("ItemValue"));
 			}
 		} catch (FileNotFoundException | JSONException e) {
 			// TODO Auto-generated catch block
@@ -119,10 +119,10 @@ public class WATER_info {
 	}
 
 	// updata air information in local air data
-	public void updata_air_info() {
+	public void updata() {
 		this.connect_db();
-		
-		System.out.println("---begin updata air_info");
+
+		System.out.println("---begin updata water_info");
 
 		// download json file
 		this.download_info(water_url);
@@ -130,44 +130,50 @@ public class WATER_info {
 		// read json
 		JSONArray water_info_json;
 		JSONObject water_object;
-		
+
 		int new_data = 0;
 		try {
 			water_info_json = new JSONArray(new JSONTokener(new FileReader(
 					new File(path))));
 			for (int i = 0; i < water_info_json.length(); i++) {
 				water_object = water_info_json.getJSONObject(i);
+				//only get 焊此计
+				if (water_object.getString("ItemName").equals("焊此计")) {
+					String select_sql = "SELECT * FROM water_info WHERE "
+							+ "\"SiteName\" = '" + water_object.get("SiteName")
+							+ "' AND " + "\"SampleDate\" = '"
+							+ water_object.get("SampleDate") + "'";
+					// System.out.println(sql);
+					Statement st = conn.createStatement();
+					ResultSet rs = st.executeQuery(select_sql);
+					// have new data to updata
+					if (rs.next())
+					{
+						break;
+					}else
+					{
+						String insert_sql = "INSERT INTO water_info VALUES ('"
+								+ water_object.get("SiteName") + "'," + "'"
+								+ water_object.get("County") + "'," + "'"
+								+ water_object.get("Township") + "'," + "'"
+								+ water_object.get("SampleDate") + "'," + "'"
+								+ water_object.get("ItemName") + "',"
+								+ water_object.get("ItemValue") + ")";
+						st.executeUpdate(insert_sql);
+						new_data++;
+					}
+					rs.close();
+					st.close();
+				}
 				// find the data is always in table air_info
-				String select_sql = "SELECT * FROM water_info WHERE "
-						+ "\"SiteId\" = '" + water_object.getInt("SiteId")
-						+ "' AND " + "\"MonitorDate\" = '"
-						+ water_object.get("MonitorDate") + "'";
-				// System.out.println(sql);
-				Statement st = conn.createStatement();
-				ResultSet rs = st.executeQuery(select_sql);
-				// have not new data to updata
-				if (rs.next()) {
-					break;
-				}
-				// hava new data to updata
-				else {
-					String insert_sql = "INSERT INTO water_info VALUES ("
-							+ water_object.getInt("SiteId") + ","
-							+ "'" + water_object.get("SiteName")+ "',"
-							+ "'" + water_object.get("MonitorDate")+ "',"
-							+ water_object.getInt("PSI") + ")";
-					st.executeUpdate(insert_sql);
-					new_data++;
-				}
-				rs.close();
-				st.close();
+
 			}
-			if(new_data == 0)
+			if (new_data == 0)
 				System.out.println("have not new data to updata");
 			else
 				System.out.println("have " + new_data + " data to updata");
 
-			System.out.println("---finish updata air_info");
+			System.out.println("---finish updata water_info");
 			this.close_db();
 		} catch (FileNotFoundException | JSONException e) {
 			// TODO Auto-generated catch block

@@ -13,7 +13,8 @@ public class d_place {
 		AIR_info air = AIR_info.getObject();
 		WATER_info water = WATER_info.getObject();
 		//updata air_info
-		//air.updata_air_info();	
-
+		air.updata();	
+		//updata water_info
+		water.updata();	
 	}
 }

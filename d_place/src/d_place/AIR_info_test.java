@@ -26,10 +26,7 @@ public class AIR_info_test {
 			JSONException {
 		String air_url = "http://opendata.epa.gov.tw/ws/Data/AQXDaily/?$orderby=MonitorDate%20desc&$skip=0&$top=1000&format=json";
 		String air_path = "AIR_info.json";
-		// test (1)
 		air.download_info(air_url);
-		// test (2)
-		air.show_info(air_path);
 	}
 	@Test
 	public void connect_close_database() throws ConnectException, IOException,
