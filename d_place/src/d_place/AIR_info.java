@@ -63,6 +63,8 @@ public class AIR_info {
 			// closed
 			conn.close();
 			System.out.println("Team11 database closed");
+			System.out.println("");
+
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
@@ -73,6 +75,7 @@ public class AIR_info {
 	// download air information json file
 	public void download_info(String url) {
 		try {
+			System.out.println("downloading.....");
 			// use bufferedrwader get buffer length and get the json with UTF-8
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					(new URL(url).openStream()), "UTF-8"));
@@ -146,10 +149,10 @@ public class AIR_info {
 	}
 
 	// updata air information in local air data
-	public void updata() {
+	public void update() {
 		this.connect_db();
 
-		System.out.println("---begin updata air_info");
+		System.out.println("---begin update air_info");
 
 		// download json file
 		this.download_info(air_url);
@@ -164,7 +167,7 @@ public class AIR_info {
 			// read air_info json
 			air_info_json = new JSONArray(new JSONTokener(new FileReader(
 					new File(path))));
-
+			System.out.println("updateing.....");
 			for (int i = 0; i < air_info_json.length(); i++) {
 				air_object = air_info_json.getJSONObject(i);
 				// find the data is always in table air_info
@@ -199,11 +202,11 @@ public class AIR_info {
 				st.close();
 			}
 			if (new_data == 0)
-				System.out.println("have not new data to updata");
+				System.out.println("have not new data to update");
 			else
-				System.out.println("have " + new_data + " data to updata");
+				System.out.println("have " + new_data + " data to update");
 
-			System.out.println("---finish updata air_info");
+			System.out.println("---finish update air_info");
 			this.close_db();
 		} catch (FileNotFoundException | JSONException e) {
 			// TODO Auto-generated catch block
