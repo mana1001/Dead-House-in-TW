@@ -1,92 +1,179 @@
 package d_place;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.*;
 
 import org.json.*;
+
 public class AIR_info {
 
 	private static AIR_info current_air_info = new AIR_info();
-	//all air information <Date , Local , PSI>
-	private Map<String, HashMap<String, Integer>> air_info;
+	// path of air_info json file
+	private static String path = "AIR_info.json";
+	// URL of air_info json file
+	String air_url = "http://opendata.epa.gov.tw/ws/Data/AQXDaily/?$orderby=MonitorDate%20desc&$skip=0&$top=1000&format=json";
+
+	// JDBC driver name and database URL
+	static final String JDBC_DRIVER = "org.postgresql.Driver";
+	static final String DB_URL = "jdbc:postgresql://210.61.10.89:9999/Team11";
+	// database user and passwd
+	static final String USER = "Team11";
+	static final String PASS = "2013postgres";
 	//
-	public static AIR_info getObject() { 
-        return current_air_info; 
-    }
-	//class construction
-	public AIR_info()
-	{
-		air_info = new HashMap<String ,HashMap<String , Integer>>();
-		this.read_info();
-	}
-	//read local air information
-	private void read_info()
-	{
-		//first time to read air information
-		if(air_info.isEmpty())
-		{
+	private static Connection conn = null;
 
-			
+	// return object
+	public static AIR_info getObject() {
+		return current_air_info;
+	}
+
+	// class constructor
+	public AIR_info() {
+	}
+
+	// get connect to database
+	public void connect_db() {
+		try {
+			Class.forName(JDBC_DRIVER).newInstance();
+
+			// connect to database
+			conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			System.out.println("table air_info connected");
+
+		} catch (InstantiationException | IllegalAccessException
+				| ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
-	
-	//download air information json file
-	public void download_info(String url , String path)throws IOException, ConnectException
-	{
 
-	    try {
-            //use bufferedrwader get buffer length and get the json with UTF-8
-            BufferedReader in = new BufferedReader(new InputStreamReader((new URL(url).openStream()), "UTF-8"));
-            //write the buffer in json file
-            BufferedWriter out = new BufferedWriter(new FileWriter(path));
-            char[] cbuf=new char[255];
-            //get data and write data
-            for (int length; (length = in.read(cbuf)) > 0; out.write(cbuf, 0, length));
-            //close reader and writer
-            in.close();
-            out.close();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-	    System.out.println("download finish");
-	    
-	}
-	//show all air information
-	public void show_info(String path) throws FileNotFoundException, JSONException
-	{
-		//read json
-		JSONArray air_info_json = new JSONArray(new JSONTokener(new FileReader(new File(path))));
-		JSONObject air_object ;
-		//print all json data
-		for(int i = 0 ; i < air_info_json.length() ; i ++)
-		{
-			air_object = air_info_json.getJSONObject(i);
-			System.out.println(air_object.get("SiteName") + "  "+ air_object.get("MonitorDate") + "  " + air_object.get("PSI"));
+	public void close_db() {
+		try {
+			Class.forName(JDBC_DRIVER).newInstance();
+
+			// closed
+			conn.close();
+			System.out.println("table air_info closed");
+		} catch (InstantiationException | IllegalAccessException
+				| ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
-	//updata air information in local air data
-	public void updata_air_info()
-	{
+
+	// download air information json file
+	public void download_info(String url) {
+		try {
+			// use bufferedrwader get buffer length and get the json with UTF-8
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					(new URL(url).openStream()), "UTF-8"));
+			// write the buffer in json file
+			BufferedWriter out = new BufferedWriter(new FileWriter(path));
+			char[] cbuf = new char[255];
+			// get data and write data
+			for (int length; (length = in.read(cbuf)) > 0; out.write(cbuf, 0,
+					length))
+				;
+			// close reader and writer
+			in.close();
+			out.close();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("download finish");
+
+	}
+
+	// show all air information
+	public void show_info(String path) {
+		// read json
+		JSONArray air_info_json;
+		try {
+			air_info_json = new JSONArray(new JSONTokener(new FileReader(
+					new File(path))));
+
+			JSONObject air_object;
+			// print all json data
+			for (int i = 0; i < air_info_json.length(); i++) {
+				air_object = air_info_json.getJSONObject(i);
+				System.out.println(air_object.get("SiteName") + "  "
+						+ air_object.get("MonitorDate") + "  "
+						+ air_object.get("PSI"));
+			}
+		} catch (FileNotFoundException | JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	// updata air information in local air data
+	public void updata_air_info() {
+		System.out.println("---begin updata air_info");
+
+		// download json file
+		this.download_info(air_url);
+
+		// read json
+		JSONArray air_info_json;
+		JSONObject air_object;
 		
-	
+		int new_data = 0;
+		try {
+			air_info_json = new JSONArray(new JSONTokener(new FileReader(
+					new File(path))));
+			for (int i = 0; i < air_info_json.length(); i++) {
+				air_object = air_info_json.getJSONObject(i);
+				// find the data is always in table air_info
+				String select_sql = "SELECT * FROM air_info WHERE "
+						+ "\"SiteId\" = '" + air_object.getInt("SiteId")
+						+ "' AND " + "\"MonitorDate\" = '"
+						+ air_object.get("MonitorDate") + "'";
+				// System.out.println(sql);
+				Statement st = conn.createStatement();
+				ResultSet rs = st.executeQuery(select_sql);
+				// have not new data to updata
+				if (rs.next()) {
+					break;
+				}
+				// hava new data to updata
+				else {
+					String insert_sql = "INSERT INTO air_info VALUES ("
+							+ air_object.getInt("SiteId") + ","
+							+ "'" + air_object.get("SiteName")+ "',"
+							+ "'" + air_object.get("MonitorDate")+ "',"
+							+ air_object.getInt("PSI") + ")";
+					st.executeUpdate(insert_sql);
+					new_data++;
+				}
+				rs.close();
+				st.close();
+			}
+			if(new_data == 0)
+				System.out.println("have not new data to updata");
+			else
+				System.out.println("have " + new_data + " data to updata");
+
+			System.out.println("---finish updata air_info");
+
+		} catch (FileNotFoundException | JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

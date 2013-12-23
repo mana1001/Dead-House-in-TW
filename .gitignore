@@ -5,3 +5,4 @@
 *.war
 *.ear
 /d_place/*.classpath
+/d_place/lib
