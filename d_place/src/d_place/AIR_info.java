@@ -162,7 +162,7 @@ public class AIR_info {
 		JSONObject air_object;
 
 		int new_data = 0;
-		int PSI=0;
+		int PSI = 0;
 		try {
 			// read air_info json
 			air_info_json = new JSONArray(new JSONTokener(new FileReader(
@@ -184,17 +184,29 @@ public class AIR_info {
 				}
 				// hava new data to updata
 				else {
-					if(air_object.get("PSI").toString().equals(""))
-						PSI=0;
+					if (air_object.get("PSI").toString().equals(""))
+						PSI = 0;
 					else
-						PSI= Integer.parseInt(air_object.get("PSI").toString());
+						PSI = Integer
+								.parseInt(air_object.get("PSI").toString());
 					String insert_sql = "INSERT INTO air_info VALUES ("
-							+ air_object.getInt("SiteId") + "," + "'"
-							+ air_object.get("SiteName") + "'," + "'"
-							+ air_object.get("MonitorDate") + "',"
-							+ PSI + "," + "'"
-							+ this.get_location(air_object.getString("SiteName"))[0] + "'," + "'"
-							+ this.get_location(air_object.getString("SiteName"))[1] + "')";
+							+ air_object.getInt("SiteId")
+							+ ","
+							+ "'"
+							+ air_object.get("SiteName")
+							+ "',"
+							+ "'"
+							+ air_object.get("MonitorDate")
+							+ "',"
+							+ PSI
+							+ ","
+							+ "'"
+							+ this.get_location(air_object
+									.getString("SiteName"))[0]
+							+ "',"
+							+ "'"
+							+ this.get_location(air_object
+									.getString("SiteName"))[1] + "')";
 					st.executeUpdate(insert_sql);
 					new_data++;
 				}
@@ -237,9 +249,35 @@ public class AIR_info {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		county[0]="";
-		county[1]="";
+		county[0] = "";
+		county[1] = "";
 		return null;
 
+	}
+
+	// get PSI
+	public ResultSet GetPST(String county, String township) {
+		// connect to database
+		this.connect_db();
+		ResultSet rs;
+		Statement st;
+		try {
+			// find all this place PSI
+			String select_sql = "SELECT * FROM air_info WHERE "
+					+ "\"County\" = '" + county + "' AND " + "\"Township\" = '"
+					+ township + "'";
+			st = conn.createStatement();
+			rs = st.executeQuery(select_sql);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+
+		// close connect
+		this.close_db();
+		// return the result
+		return rs;
 	}
 }

@@ -13,7 +13,8 @@ public class d_place {
 
 	//
 	public static void main(String[] args) {
-		//set timer to update air and water information
+		// set timer to update air and water information
+		// every 20 Second to update
 		Timer timer = new Timer();
 		timer.schedule(new RemindTask(), 0, 20000);
 	}

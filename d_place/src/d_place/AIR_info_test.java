@@ -8,6 +8,8 @@ package d_place;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,12 +31,20 @@ public class AIR_info_test {
 		air.download_info(air_url);
 	}
 	@Test
-	public void connect_close_database() throws ConnectException, IOException,
+	public void test_connect_close_database() throws ConnectException, IOException,
 			JSONException {
 		//connect database
 		air.connect_db();
 		//close database
 		air.close_db();
+	}
+	@Test
+	public void test_GetPSI() throws ConnectException, IOException,
+			JSONException, SQLException {
+		String county = "¶³ªL¿¤";
+		String township = "³Á¼d¶m";
+		ResultSet rs = air.GetPST(county, township);
+		System.out.println(rs.next());
 	}
 
 }
