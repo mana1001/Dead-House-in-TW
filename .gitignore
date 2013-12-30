@@ -1,0 +1,8 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+/d_place/*.classpath
+/d_place/lib
