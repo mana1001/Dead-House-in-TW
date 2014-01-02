@@ -8,9 +8,6 @@ import java.util.TimerTask;
 
 public class d_place {
 	public int i = 0;
-	private static AIR_info air = AIR_info.getObject();
-	private static WATER_info water = WATER_info.getObject();
-
 	//
 	public static void main(String[] args) {
 		// set timer to update air and water information

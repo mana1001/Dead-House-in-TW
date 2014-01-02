@@ -256,7 +256,7 @@ public class AIR_info {
 	}
 
 	// get PSI
-	public ResultSet GetPST(String county, String township) {
+	public ResultSet GetPSI(String county, String township) {
 		// connect to database
 		this.connect_db();
 		ResultSet rs;

@@ -43,7 +43,7 @@ public class AIR_info_test {
 			JSONException, SQLException {
 		String county = "¶³ªL¿¤";
 		String township = "³Á¼d¶m";
-		ResultSet rs = air.GetPST(county, township);
+		ResultSet rs = air.GetPSI(county, township);
 		System.out.println(rs.next());
 	}
 
