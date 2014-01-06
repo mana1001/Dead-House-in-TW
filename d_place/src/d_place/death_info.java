@@ -1,3 +1,5 @@
+package d_place;
+
 import java.sql.*;
 
 public class death_info {
@@ -97,10 +99,10 @@ public class death_info {
     	 this.close_db();
     	 return data;
     }
-    String[] countys = {"嘉義市","新北市","屏東縣","高雄縣","嘉義縣","雲林縣",
-    		"台南市","新竹縣","彰化縣","台南縣","台中縣","台中市","宜蘭縣","金門縣"
-    		,"基隆市","連江縣","高雄市","台東縣","台北市","新竹市","澎湖縣","南投縣",
-    		"苗栗縣","花蓮縣","桃園縣"};
+    private String[] countys = {"嘉義市","新北市","屏東縣","高雄縣","嘉義縣","雲林縣",
+            "台南市","新竹縣","彰化縣","台南縣","台中縣","台中市","宜蘭縣","金門縣"
+            ,"基隆市","連江縣","高雄市","台東縣","台北市","新竹市","澎湖縣","南投縣",
+            "苗栗縣","花蓮縣","桃園縣"};
     public String[] get_death_info_county()
     {
     	return countys;

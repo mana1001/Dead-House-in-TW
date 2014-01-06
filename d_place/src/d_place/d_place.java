@@ -11,9 +11,9 @@ public class d_place {
 	//
 	public static void main(String[] args) {
 		// set timer to update air and water information
-		// every 20 Second to update
+		// every 60 Second to update
 		Timer timer = new Timer();
-		timer.schedule(new RemindTask(), 0, 20000);
+		timer.schedule(new RemindTask(), 0, 60000);
 	}
 
 }
@@ -21,12 +21,14 @@ public class d_place {
 class RemindTask extends TimerTask {
 	private static AIR_info air = AIR_info.getObject();
 	private static WATER_info water = WATER_info.getObject();
-
+	private static death_info death = death_info.getObject();
 	@Override
 	public void run() {
 		// Update air_info
-		air.update();
+		//air.update();
 		// Update water_info
-		water.update();
+		//water.update();
+		
+		
 	}
 }
