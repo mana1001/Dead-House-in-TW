@@ -2,8 +2,14 @@
 
 package d_place;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.*;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -53,6 +59,56 @@ class RemindTask extends TimerTask {
 		air.close_db();
 		water.close_db();
 		
-
+		
+		File file;
+		file = new File("output.html");
+		String head = "<html><head><title>output result</title></head><body>";
+		String tale = "</body></html>";
+		String line;
+		try (FileOutputStream fop = new FileOutputStream(file)) {
+			 
+			// if file doesn't exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+ 
+			// get the content in bytes
+			byte[] contentInBytes = head.getBytes();
+			fop.write(contentInBytes);
+			
+			Iterator it = AirResult.entrySet().iterator();
+			line = "<h1>air danger (pollution * air cause rate)</h1> ";
+			contentInBytes = line.getBytes();
+		    fop.write(contentInBytes);
+			while (it.hasNext()) {
+		        Map.Entry pairs = (Map.Entry)it.next();
+		        line = pairs.getKey() + " = " + pairs.getValue() + "<br>";
+		        contentInBytes = line.getBytes();
+		        fop.write(contentInBytes);
+		    }
+			
+			line = "<h1>water danger (pollution * air cause rate)</h1> ";
+			contentInBytes = line.getBytes();
+		    fop.write(contentInBytes);
+			  it = WaterResult.entrySet().iterator();
+			while (it.hasNext()) {
+		        Map.Entry pairs = (Map.Entry)it.next();
+		        line =pairs.getKey() + " = " + pairs.getValue()+ "<br>";
+		        contentInBytes = line.getBytes();
+		        fop.write(contentInBytes);
+		    }
+			
+			
+			contentInBytes = tale.getBytes();
+			fop.write(contentInBytes);
+			
+			fop.flush();
+			fop.close();
+ 
+			
+ 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
