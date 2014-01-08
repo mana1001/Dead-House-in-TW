@@ -21,7 +21,7 @@ public class d_place {
 		// set timer to update air and water information
 		// every 60 Second to update
 		Timer timer = new Timer();
-		timer.schedule(new RemindTask(), 0, 60000);
+		timer.schedule(new RemindTask(), 0, 600000);
 	}
 
 }
@@ -35,10 +35,11 @@ class RemindTask extends TimerTask {
 	public void run() {
 		// Update air_info
 		// air.update();
+		
 		// Update water_info
 		// water.update();
+		
 		// Updata ranking
-
 		HashMap<String, Double> AirResult = new HashMap<String, Double>();
 		HashMap<String, Double> WaterResult = new HashMap<String, Double>();
 		String[] county = death.get_death_info_county();
