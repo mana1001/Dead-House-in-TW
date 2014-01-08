@@ -67,8 +67,10 @@ public class death_info {
                              + "\"county\" = '" + county + "';";
              st = conn.createStatement();
              rs = st.executeQuery(select_sql);
-    		 rs.next();
-             data = rs.getDouble("air_rate");
+    	     if (rs.next())
+    		ata = rs.getDouble("air_rate");
+    	     else 
+    		System.out.println("Cannot find "+county);
     	 } catch (SQLException e) {
              // TODO Auto-generated catch block
              e.printStackTrace();
@@ -89,8 +91,11 @@ public class death_info {
                              + "\"county\" = '" + county + "';";
              st = conn.createStatement();
              rs = st.executeQuery(select_sql);
-    		 rs.next();
-             data = rs.getDouble("water_rate");
+    	     
+    	     if(rs.next())
+             	data = rs.getDouble("water_rate");
+    	     else
+    		System.out.println("Cannot find "+county);
     	 } catch (SQLException e) {
              // TODO Auto-generated catch block
              e.printStackTrace();
