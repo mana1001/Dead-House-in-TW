@@ -2,10 +2,12 @@
 
 package d_place;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -66,45 +68,50 @@ class RemindTask extends TimerTask {
 		String head = "<html><head><title>output result</title></head><body>";
 		String tale = "</body></html>";
 		String line;
-		try (FileOutputStream fop = new FileOutputStream(file)) {
-			 
-			// if file doesn't exists, then create it
-			if (!file.exists()) {
-				file.createNewFile();
-			}
- 
-			// get the content in bytes
+		try  {
+			FileOutputStream fop = new FileOutputStream(file);
+			
+				/*  write UTF8 BOM mark  */
+	            final byte[] bom = new byte[] { (byte)0xEF, (byte)0xBB, (byte)0xBF };
+	            fop.write(bom);
+	         
+			
+			BufferedWriter out = 
+					new BufferedWriter(new OutputStreamWriter(fop,"UTF8"));
+			
 			byte[] contentInBytes = head.getBytes();
 			fop.write(contentInBytes);
 			
-			Iterator it = AirResult.entrySet().iterator();
+			Iterator it = AirResult.entrySet().iterator();	
 			line = "<h1>air danger (pollution * air cause rate)</h1> ";
-			contentInBytes = line.getBytes();
-		    fop.write(contentInBytes);
+
+			out.write(line);
+			
 			while (it.hasNext()) {
 		        Map.Entry pairs = (Map.Entry)it.next();
 		        line = pairs.getKey() + " = " + pairs.getValue() + "<br>";
-		        contentInBytes = line.getBytes();
-		        fop.write(contentInBytes);
+
+		        out.write(line);
 		    }
 			
 			line = "<h1>water danger (pollution * air cause rate)</h1> ";
-			contentInBytes = line.getBytes();
-		    fop.write(contentInBytes);
+
+			out.write(line);
+			
 			  it = WaterResult.entrySet().iterator();
 			while (it.hasNext()) {
 		        Map.Entry pairs = (Map.Entry)it.next();
 		        line =pairs.getKey() + " = " + pairs.getValue()+ "<br>";
-		        contentInBytes = line.getBytes();
-		        fop.write(contentInBytes);
+		        
+		        out.write(line);
 		    }
 			
+
+			out.write(line);
 			
-			contentInBytes = tale.getBytes();
-			fop.write(contentInBytes);
-			
-			fop.flush();
-			fop.close();
+			out.flush();
+			out.close();
+
  
 			
  
