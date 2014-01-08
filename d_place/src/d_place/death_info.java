@@ -70,7 +70,10 @@ public class death_info {
     	     if (rs.next())
     		ata = rs.getDouble("air_rate");
     	     else 
-    		System.out.println("Cannot find "+county);
+    		{	
+    		//System.out.println("Cannot find "+county);
+    		return 0;
+    		}
     	 } catch (SQLException e) {
              // TODO Auto-generated catch block
              e.printStackTrace();
@@ -95,7 +98,10 @@ public class death_info {
     	     if(rs.next())
              	data = rs.getDouble("water_rate");
     	     else
-    		System.out.println("Cannot find "+county);
+    	     {
+    		//System.out.println("Cannot find "+county);
+    		return 0;
+    	     }
     	 } catch (SQLException e) {
              // TODO Auto-generated catch block
              e.printStackTrace();
@@ -105,8 +111,8 @@ public class death_info {
     	 return data;
     }
     private String[] countys = {"嘉義市","新北市","屏東縣","高雄縣","嘉義縣","雲林縣",
-            "台南市","新竹縣","彰化縣","台南縣","台中縣","台中市","宜蘭縣","金門縣"
-            ,"基隆市","連江縣","高雄市","台東縣","台北市","新竹市","澎湖縣","南投縣",
+            "臺南市","新竹縣","彰化縣","臺南縣","臺中縣","臺中市","宜蘭縣","金門縣"
+            ,"基隆市","連江縣","高雄市","台東縣","臺北市","新竹市","澎湖縣","南投縣",
             "苗栗縣","花蓮縣","桃園縣"};
     public String[] get_death_info_county()
     {
