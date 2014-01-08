@@ -187,4 +187,37 @@ public class WATER_info {
 			e.printStackTrace();
 		}
 	}
+	// get PSI
+		public double GetCarlson(String county) {
+			// connect to database
+			//this.connect_db();
+			ResultSet rs;
+			Statement st;
+			double all = 0;
+			int count = 0;
+			try {
+				// find all this place PSI
+				String select_sql = "SELECT * FROM water_info WHERE "
+						+ "\"County\" = '" + county + "'";
+				st = conn.createStatement();
+				rs = st.executeQuery(select_sql);
+
+				while (rs.next()) {
+					int i = rs.getInt("ItemValue");
+					all = all + i;
+					count++;
+				}
+				if (count != 0)
+					all = all / count;
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return 0;
+			}
+			// close connect
+			//this.close_db();
+			// return the result
+			return all;
+		}
 }

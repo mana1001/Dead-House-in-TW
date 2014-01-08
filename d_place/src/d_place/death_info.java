@@ -68,7 +68,7 @@ public class death_info {
              st = conn.createStatement();
              rs = st.executeQuery(select_sql);
     	     if (rs.next())
-    		ata = rs.getDouble("air_rate");
+    		data = rs.getDouble("air_rate");
     	     else 
     		{	
     		//System.out.println("Cannot find "+county);
