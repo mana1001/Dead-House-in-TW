@@ -47,6 +47,7 @@ class RemindTask extends TimerTask {
 		water.update();
 
 		// Updata ranking
+		System.out.println("Ranking Upate");
 		HashMap<String, Double> AirResult = new HashMap<String, Double>();
 		HashMap<String, Double> WaterResult = new HashMap<String, Double>();
 		String[] county = death.get_death_info_county();
@@ -126,7 +127,7 @@ class RemindTask extends TimerTask {
 			ListIterator<Map.Entry<String, Double>> litr = list_AirResult
 					.listIterator();
 			Map.Entry<String, Double> entry;
-			line = "<h1>air danger (pollution * air cause rate)</h1> ";
+			line = "<h1>air danger (pollution * air cause rate)</h1>  >800 : 危險   |   800~600 : 中等    |   600~400 : 良好<br><br>";
 
 			out.write(line);
 			while (litr.hasNext()) {
@@ -139,7 +140,7 @@ class RemindTask extends TimerTask {
 			}
 
 			litr = list_WaterResult.listIterator();
-			line = "<h1>water danger (pollution * water cause rate)</h1> ";
+			line = "<h1>water danger (pollution * water cause rate)</h1>   >200 : 危險   |   200~100 : 中等   |    0~100 : 良好<br><br>";
 
 			out.write(line);
 
