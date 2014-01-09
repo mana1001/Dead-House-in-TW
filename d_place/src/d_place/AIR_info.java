@@ -63,7 +63,7 @@ public class AIR_info {
 			// closed
 			conn.close();
 			System.out.println("Team11 database closed");
-			System.out.println("");
+			//System.out.println("");
 
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | SQLException e) {
@@ -220,6 +220,8 @@ public class AIR_info {
 
 			System.out.println("---finish update air_info");
 			this.close_db();
+			System.out.println("");
+
 		} catch (FileNotFoundException | JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -277,7 +279,9 @@ public class AIR_info {
 			}
 			if (count != 0)
 				all = all / count;
-
+			rs.close();
+			st.close();
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

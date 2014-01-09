@@ -30,7 +30,6 @@ public class d_place {
 		Timer timer = new Timer();
 		timer.schedule(new RemindTask(), 0, 1200000);
 	}
-
 }
 
 class RemindTask extends TimerTask {
@@ -68,7 +67,6 @@ class RemindTask extends TimerTask {
 		}
 		air.close_db();
 		water.close_db();
-
 		death.close_db();
 
 		/*

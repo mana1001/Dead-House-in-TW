@@ -6,6 +6,10 @@ READ ME
  */
 package d_place;
 
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.sql.ResultSet;
@@ -13,12 +17,13 @@ import java.sql.SQLException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONTokener;
 
 public class AIR_info_test {
 
 	private static AIR_info air = AIR_info.getObject();
-
 	@Before
 	public void setUp() throws Exception {
 	}
@@ -27,8 +32,10 @@ public class AIR_info_test {
 	public void testDownload_info() throws ConnectException, IOException,
 			JSONException {
 		String air_url = "http://opendata.epa.gov.tw/ws/Data/AQXDaily/?$orderby=MonitorDate%20desc&$skip=0&$top=1000&format=json";
-		String air_path = "AIR_info.json";
 		air.download_info(air_url);
+		JSONArray air_location_array = new JSONArray(new JSONTokener(new FileReader(
+				new File("WATER_info.json"))));
+		assertEquals(1000,air_location_array.length());
 	}
 	@Test
 	public void test_connect_close_database() throws ConnectException, IOException,
@@ -42,7 +49,11 @@ public class AIR_info_test {
 	public void test_GetPSI() throws ConnectException, IOException,
 			JSONException, SQLException {
 		String county = "¶³ªL¿¤";
-		String township = "³Á¼d¶m";
+		air.connect_db();
+		double result = air.GetPSI(county);
+		if( result !=0 )
+			System.out.println("PSI is not 0");
+		air.close_db();
 	}
 
 }
