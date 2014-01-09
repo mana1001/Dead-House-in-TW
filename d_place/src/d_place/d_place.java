@@ -23,7 +23,7 @@ public class d_place {
 		// set timer to update air and water information
 		// every 60 Second to update
 		Timer timer = new Timer();
-		timer.schedule(new RemindTask(), 0, 600000);
+		timer.schedule(new RemindTask(), 0, 1200000);
 	}
 
 }
@@ -36,11 +36,11 @@ class RemindTask extends TimerTask {
 	@Override
 	public void run() {
 		// Update air_info
-		// air.update();
-		
+		 air.update();
+
 		// Update water_info
-		// water.update();
-		
+		 water.update();
+
 		// Updata ranking
 		HashMap<String, Double> AirResult = new HashMap<String, Double>();
 		HashMap<String, Double> WaterResult = new HashMap<String, Double>();
@@ -51,6 +51,7 @@ class RemindTask extends TimerTask {
 		double Carlson = 0;
 		air.connect_db();
 		water.connect_db();
+		death.connect_db();
 		for (int i = 0; i < county.length; i++) {
 			air_death_rate = death.get_air_death_rate(county[i]);
 			water_death_rate = death.get_water_death_rate(county[i]);
@@ -61,60 +62,56 @@ class RemindTask extends TimerTask {
 		}
 		air.close_db();
 		water.close_db();
-		
-		
+		death.close_db();
+
 		File file;
 		file = new File("output.html");
 		String head = "<html><head><title>output result</title></head><body>";
 		String tale = "</body></html>";
 		String line;
-		try  {
+		try {
 			FileOutputStream fop = new FileOutputStream(file);
-			
-				/*  write UTF8 BOM mark  */
-	            final byte[] bom = new byte[] { (byte)0xEF, (byte)0xBB, (byte)0xBF };
-	            fop.write(bom);
-	         
-			
-			BufferedWriter out = 
-					new BufferedWriter(new OutputStreamWriter(fop,"UTF8"));
-			
+
+			/* write UTF8 BOM mark */
+			final byte[] bom = new byte[] { (byte) 0xEF, (byte) 0xBB,
+					(byte) 0xBF };
+			fop.write(bom);
+
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fop,
+					"UTF8"));
+
 			byte[] contentInBytes = head.getBytes();
 			fop.write(contentInBytes);
-			
-			Iterator it = AirResult.entrySet().iterator();	
+
+			Iterator it = AirResult.entrySet().iterator();
 			line = "<h1>air danger (pollution * air cause rate)</h1> ";
 
 			out.write(line);
-			
-			while (it.hasNext()) {
-		        Map.Entry pairs = (Map.Entry)it.next();
-		        line = pairs.getKey() + " = " + pairs.getValue() + "<br>";
 
-		        out.write(line);
-		    }
-			
+			while (it.hasNext()) {
+				Map.Entry pairs = (Map.Entry) it.next();
+				line = pairs.getKey() + " = " + pairs.getValue() + "<br>";
+
+				out.write(line);
+			}
+
 			line = "<h1>water danger (pollution * air cause rate)</h1> ";
 
 			out.write(line);
-			
-			  it = WaterResult.entrySet().iterator();
+
+			it = WaterResult.entrySet().iterator();
 			while (it.hasNext()) {
-		        Map.Entry pairs = (Map.Entry)it.next();
-		        line =pairs.getKey() + " = " + pairs.getValue()+ "<br>";
-		        
-		        out.write(line);
-		    }
-			
+				Map.Entry pairs = (Map.Entry) it.next();
+				line = pairs.getKey() + " = " + pairs.getValue() + "<br>";
+
+				out.write(line);
+			}
 
 			out.write(line);
-			
+
 			out.flush();
 			out.close();
 
- 
-			
- 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

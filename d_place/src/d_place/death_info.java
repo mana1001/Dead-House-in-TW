@@ -18,7 +18,7 @@ public class death_info {
 	}
 	
 	// get connect to database
-    private void connect_db() {
+    public void connect_db() {
             try {
                     Class.forName(JDBC_DRIVER).newInstance();
 
@@ -33,7 +33,7 @@ public class death_info {
             }
     }
     
-    private void close_db() {
+    public void close_db() {
         try {
                 Class.forName(JDBC_DRIVER).newInstance();
 
@@ -58,7 +58,7 @@ public class death_info {
     public double get_air_death_rate(String county)
     {
     	 double data = -1;
-    	 this.connect_db();
+    	// this.connect_db();
     	 ResultSet rs;
          Statement st;
     	 try {
@@ -79,13 +79,13 @@ public class death_info {
              e.printStackTrace();
              return -1;
     	 }
-    	 this.close_db();
+    	// this.close_db();
     	 return data;
     }
     public double get_water_death_rate(String county)
     {
     	 double data = -1;
-    	 this.connect_db();
+    	 //this.connect_db();
     	 ResultSet rs;
          Statement st;
     	 try {
@@ -107,7 +107,7 @@ public class death_info {
              e.printStackTrace();
              return -1;
     	 }
-    	 this.close_db();
+    	 //this.close_db();
     	 return data;
     }
     private String[] countys = {"嘉義市","新北市","屏東縣","高雄縣","嘉義縣","雲林縣",
