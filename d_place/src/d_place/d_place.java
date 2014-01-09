@@ -9,8 +9,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,10 +41,10 @@ class RemindTask extends TimerTask {
 	@Override
 	public void run() {
 		// Update air_info
-		 air.update();
+		air.update();
 
 		// Update water_info
-		 water.update();
+		water.update();
 
 		// Updata ranking
 		HashMap<String, Double> AirResult = new HashMap<String, Double>();
@@ -62,8 +67,43 @@ class RemindTask extends TimerTask {
 		}
 		air.close_db();
 		water.close_db();
+
 		death.close_db();
 
+		/*
+		 * SORT RESULT
+		 * 
+		 * *
+		 */
+		List<Map.Entry<String, Double>> list_AirResult = new ArrayList<Map.Entry<String, Double>>(
+				AirResult.entrySet());
+
+		Collections.sort(list_AirResult,
+				new Comparator<Map.Entry<String, Double>>() {
+					public int compare(Map.Entry<String, Double> o1,
+							Map.Entry<String, Double> o2) {
+						return (int) (o2.getValue() - o1.getValue());
+					}
+				});
+
+		List<Map.Entry<String, Double>> list_WaterResult = new ArrayList<Map.Entry<String, Double>>(
+				WaterResult.entrySet());
+
+		Collections.sort(list_WaterResult,
+				new Comparator<Map.Entry<String, Double>>() {
+					public int compare(Map.Entry<String, Double> o1,
+							Map.Entry<String, Double> o2) {
+						return (int) (o2.getValue() - o1.getValue());
+					}
+				});
+
+		/*
+		 * 
+		 * 
+		 * write result HTML
+		 * 
+		 * ****************
+		 */
 		File file;
 		file = new File("output.html");
 		String head = "<html><head><title>output result</title></head><body>";
@@ -83,34 +123,40 @@ class RemindTask extends TimerTask {
 			byte[] contentInBytes = head.getBytes();
 			fop.write(contentInBytes);
 
-			Iterator it = AirResult.entrySet().iterator();
+			ListIterator<Map.Entry<String, Double>> litr = list_AirResult
+					.listIterator();
+			Map.Entry<String, Double> entry;
 			line = "<h1>air danger (pollution * air cause rate)</h1> ";
 
 			out.write(line);
-
-			while (it.hasNext()) {
-				Map.Entry pairs = (Map.Entry) it.next();
-				line = pairs.getKey() + " = " + pairs.getValue() + "<br>";
-
-				out.write(line);
-			}
-
-			line = "<h1>water danger (pollution * air cause rate)</h1> ";
-
-			out.write(line);
-
-			it = WaterResult.entrySet().iterator();
-			while (it.hasNext()) {
-				Map.Entry pairs = (Map.Entry) it.next();
-				line = pairs.getKey() + " = " + pairs.getValue() + "<br>";
+			while (litr.hasNext()) {
+				entry = litr.next();
+				if (entry.getValue() < 1)
+					break;
+				line = entry.getKey() + " = " + entry.getValue() + "<br>";
 
 				out.write(line);
 			}
 
+			litr = list_WaterResult.listIterator();
+			line = "<h1>water danger (pollution * water cause rate)</h1> ";
+
 			out.write(line);
 
+			while (litr.hasNext()) {
+				entry = litr.next();
+
+				if (entry.getValue() < 1)
+					break;
+				line = entry.getKey() + " = " + entry.getValue() + "<br>";
+
+				out.write(line);
+			}
+
+			out.write(line);
 			out.flush();
 			out.close();
+			System.out.println("All Update Finfish");
 
 		} catch (IOException e) {
 			e.printStackTrace();
