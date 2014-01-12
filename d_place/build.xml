@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project name="junitsuiteexample" default="report">
 
  <property name="project.name" value="junitsuiteexample"/>
@@ -21,7 +21,7 @@
 
   <echo>Compile</echo>
   <target name="compile" depends="makedir" description="Compile java code.">
-   <javac debug="true" destdir="${classes.dir}" includeAntRuntime="false">
+   <javac debug="true" destdir="${classes.dir}" includeAntRuntime="false" encoding="UTF-8">
     <src path="${src.dir}"/>
     <classpath>
      <fileset dir="${lib.dir}" includes="**/*.jar"/>
