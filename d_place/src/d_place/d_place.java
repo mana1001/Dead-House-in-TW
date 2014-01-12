@@ -4,16 +4,13 @@ package d_place;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -58,10 +55,16 @@ class RemindTask extends TimerTask {
 		water.connect_db();
 		death.connect_db();
 		for (int i = 0; i < county.length; i++) {
+			//get county death rate
 			air_death_rate = death.get_air_death_rate(county[i]);
 			water_death_rate = death.get_water_death_rate(county[i]);
+			//get PSI
 			PSI = air.GetPSI(county[i]);
+			//get Carlson
 			Carlson = water.GetCarlson(county[i]);
+			//insert to hashmap  
+			//air data result = PSI * air_death_rate * 100
+			//water data result = Carlson * water_death_rate * 100
 			AirResult.put(county[i], PSI * air_death_rate * 100);
 			WaterResult.put(county[i], Carlson * water_death_rate * 100);
 		}
@@ -125,7 +128,7 @@ class RemindTask extends TimerTask {
 			ListIterator<Map.Entry<String, Double>> litr = list_AirResult
 					.listIterator();
 			Map.Entry<String, Double> entry;
-			line = "<h1>air danger (pollution * air cause rate)</h1>  >800 : 危險   |   800~600 : 中等    |   600~400 : 良好<br><br>";
+			line = "<h1>air danger (pollution * air cause rate)</h1>  >800 : Very Dangerus   |   800~600 : Dangerus    |   600~400 : Good<br><br>";
 
 			out.write(line);
 			while (litr.hasNext()) {
@@ -138,7 +141,7 @@ class RemindTask extends TimerTask {
 			}
 
 			litr = list_WaterResult.listIterator();
-			line = "<h1>water danger (pollution * water cause rate)</h1>   >200 : 危險   |   200~100 : 中等   |    0~100 : 良好<br><br>";
+			line = "<h1>water danger (pollution * water cause rate)</h1>   >200 : Very Dangerus   |   200~100 : Dangerus   |    0~100 : Good<br><br>";
 
 			out.write(line);
 

@@ -47,7 +47,7 @@ public class AIR_info {
 
 			// connect to database
 			conn = DriverManager.getConnection(DB_URL, USER, PASS);
-			System.out.println("Team11 database connected");
+			System.out.println("Team11 database table air_info connected");
 
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | SQLException e) {
@@ -62,7 +62,7 @@ public class AIR_info {
 
 			// closed
 			conn.close();
-			System.out.println("Team11 database closed");
+			System.out.println("Team11 database table air_info closed");
 			//System.out.println("");
 
 		} catch (InstantiationException | IllegalAccessException

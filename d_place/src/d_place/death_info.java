@@ -24,7 +24,7 @@ public class death_info {
 
 			// connect to database
 			conn = DriverManager.getConnection(DB_URL, USER, PASS);
-			System.out.println("Team11 database connected");
+			System.out.println("Team11 database table death_info connected");
 
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | SQLException e) {
@@ -39,8 +39,8 @@ public class death_info {
 
 			// closed
 			conn.close();
-			System.out.println("Team11 database closed");
-			//System.out.println("");
+			System.out.println("Team11 database table death_info closed");
+			// System.out.println("");
 
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | SQLException e) {
@@ -115,7 +115,7 @@ public class death_info {
 	private String[] countys = { "嘉義市", "新北市", "屏東縣", "高雄縣", "嘉義縣", "雲林縣",
 			"臺南市", "新竹縣", "彰化縣", "臺南縣", "臺中縣", "臺中市", "宜蘭縣", "金門縣", "基隆市",
 			"連江縣", "高雄市", "台東縣", "臺北市", "新竹市", "澎湖縣", "南投縣", "苗栗縣", "花蓮縣",
-			"桃園縣" };
+			"桃園縣", "台南市" };
 
 	public String[] get_death_info_county() {
 		return countys;

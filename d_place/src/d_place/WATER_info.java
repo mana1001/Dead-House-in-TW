@@ -47,7 +47,7 @@ public class WATER_info {
 
 			// connect to database
 			conn = DriverManager.getConnection(DB_URL, USER, PASS);
-			System.out.println("Team11 database connected");
+			System.out.println("Team11 database table water_info connected");
 
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | SQLException e) {
@@ -62,7 +62,7 @@ public class WATER_info {
 
 			// closed
 			conn.close();
-			System.out.println("Team11 database closed");
+			System.out.println("Team11 database table water_info closed");
 			//System.out.println("");
 
 		} catch (InstantiationException | IllegalAccessException
@@ -141,8 +141,8 @@ public class WATER_info {
 			System.out.println("updateing.....");
 			for (int i = 0; i < water_info_json.length(); i++) {
 				water_object = water_info_json.getJSONObject(i);
-				//only get ¥dº¸´Ë«ü¼Æ
-				if (water_object.getString("ItemName").equals("¥dº¸´Ë«ü¼Æ")) {
+				//only get å¡çˆ¾æ£®æŒ‡æ•¸
+				if (water_object.getString("ItemName").equals("å¡çˆ¾æ£®æŒ‡æ•¸")) {
 					String select_sql = "SELECT * FROM water_info WHERE "
 							+ "\"SiteName\" = '" + water_object.get("SiteName")
 							+ "' AND " + "\"SampleDate\" = '"

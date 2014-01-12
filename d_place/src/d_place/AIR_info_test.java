@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.junit.Before;
@@ -48,7 +47,7 @@ public class AIR_info_test {
 	@Test
 	public void test_GetPSI() throws ConnectException, IOException,
 			JSONException, SQLException {
-		String county = "¶³ªL¿¤";
+		String county = "é›²æž—ç¸£";
 		air.connect_db();
 		double result = air.GetPSI(county);
 		if( result !=0 )
