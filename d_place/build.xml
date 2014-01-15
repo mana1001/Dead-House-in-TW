@@ -1,60 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="junitsuiteexample" default="report">
+<project name="d_place" default="run">
 
- <property name="project.name" value="junitsuiteexample"/>
- <property name="src.dir" value="src"/>  
-  <property name="lib.dir" value="lib"/>
-  <property name="target.dir" value="target"/>
-  <property name="classes.dir" value="${target.dir}/classes"/>
-  <property name="junit.out.dir.xml"  value="${target.dir}/report/junit/xml"/>
-  <property name="junit.out.dir.html" value="${target.dir}/report/junit/html"/>
+	<property name="project.name" value="d_place" />
+	<property name="src.dir" value="src" />
+	<property name="lib.dir" value="lib" />
+	<property name="target.dir" value="target" />
+	<property name="classes.dir" value="${target.dir}/classes" />
+	<property name="jar.dir" value="${target.dir}/jar" />
+	<property name="main.class" value="d_place.d_place" />
+	<property name="junit.out.dir.xml" value="${target.dir}/report/junit/xml" />
+	<property name="junit.out.dir.html" value="${target.dir}/report/junit/html" />
 
-  <echo>Cleaning classes dir...</echo>
-  <target name="clean" description="Delete earlier classes">
-     <delete dir="${target.dir}" quiet="yes"/>
-  </target>
+	<echo>Cleaning classes dir...</echo>
+	<target name="clean" description="Delete earlier classes">
+		<delete dir="${target.dir}" quiet="yes" />
+	</target>
 
-  <echo>Make required directories...</echo>
-  <target name="makedir" depends="clean" description="Create required directories">
-   <mkdir dir="${classes.dir}"/>
-  </target>
+	<echo>Make required directories...</echo>
+	<target name="makedir" depends="clean" description="Create required directories">
+		<mkdir dir="${classes.dir}" />
+	</target>
 
-  <echo>Compile</echo>
-  <target name="compile" depends="makedir" description="Compile java code.">
-   <javac debug="true" destdir="${classes.dir}" includeAntRuntime="false" encoding="UTF-8">
-    <src path="${src.dir}"/>
-    <classpath>
-     <fileset dir="${lib.dir}" includes="**/*.jar"/>
-    </classpath>
-   </javac>
+	<echo>Compile</echo>
+	<target name="compile" depends="makedir" description="Compile java code.">
+		<javac debug="on" destdir="${classes.dir}" includeAntRuntime="false" encoding="UTF-8">
+			<src path="${src.dir}" />
+			<classpath>
+				<fileset dir="${lib.dir}" includes="**/*.jar" />
+			</classpath>
+		</javac>
 
-  </target>
-    <path id="classpath.test">
-      <path path="${java.class.path}"/>
-      <pathelement location="${classes.dir}"/>
-			<fileset dir="${lib.dir}" includes="**/*.jar"/>
-      <path location="${classes.dir}"/>
-     </path>
+	</target>
+	<path id="classpath.test">
+		<path path="${java.class.path}" />
+		<pathelement location="${classes.dir}" />
+		<fileset dir="${lib.dir}" includes="**/*.jar" />
+		<path location="${classes.dir}" />
+	</path>
 
-  <echo>Running junit test suite...</echo>
-   <target name="testsuite" depends="compile" description="Running Test Suite">
-     <delete dir="${junit.out.dir.xml}"/>
-     <mkdir  dir="${junit.out.dir.xml}"/>
-     <junit printsummary="yes" haltonfailure="no" fork="yes" maxmemory="512m">
-       <classpath refid="classpath.test"/>
-       <sysproperty key="ant.home" value="${ant.home}"/>
-       <formatter type="xml"/>
-       <batchtest fork="yes" todir="${junit.out.dir.xml}">
-         <fileset dir="${src.dir}" includes="**/**test*.java"/>
-       </batchtest>
-    </junit>
-  </target>
-	<target name = "report" depends="testsuite">
+	<target name="jar_old" depends="report">
+		<mkdir dir="${target.dir}/jar" />
+		<jar destfile="${target.dir}/jar/${ant.project.name}.jar" basedir="${classes.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+			</manifest>
+			<zipgroupfileset excludes="META-INF/**/*" dir="${lib.dir}" includes="**/*.jar" />
+		</jar>
+	</target>
+	<target name="jar" depends="report">
+		<mkdir dir="${target.dir}/jar" />
+		 <jar jarfile="${target.dir}/deps.jar">
+		        <zipgroupfileset dir="${lib.dir}">
+		            <include name="**/*.jar" />
+		        </zipgroupfileset>
+		    </jar>
+		    <sleep seconds="1" />
+		    <jar jarfile="${target.dir}/jar/${ant.project.name}.jar" basedir="${classes.dir}">
+		        <zipfileset src="${target.dir}/deps.jar" excludes="META-INF/*.SF" />
+		        <manifest>
+		            <attribute name="Main-Class" value="${main.class}" />
+		        </manifest>
+		    </jar>
+	</target>
+	<target name="run" depends="jar">
+		<java jar="${target.dir}/jar/${ant.project.name}.jar" fork="true" />
+	</target>
+	
+	<echo>Running junit test suite...</echo>
+	<target name="testsuite" depends="compile" description="Running Test Suite">
+		<delete dir="${junit.out.dir.xml}" />
+		<mkdir dir="${junit.out.dir.xml}" />
+		<junit printsummary="yes" haltonfailure="no" fork="yes" maxmemory="512m">
+			<classpath refid="classpath.test" />
+			<sysproperty key="ant.home" value="${ant.home}" />
+			<formatter type="xml" />
+			<batchtest fork="yes" todir="${junit.out.dir.xml}">
+				<fileset dir="${src.dir}" includes="**/**test*.java" />
+			</batchtest>
+		</junit>
+	</target>
+	<target name="report" depends="testsuite">
 		<junitreport todir="${junit.out.dir.xml}">
 			<fileset dir="${junit.out.dir.xml}/">
-				<include name="TEST-*.xml"/>
+				<include name="TEST-*.xml" />
 			</fileset>
-			<report format="frames" todir="${junit.out.dir.html}"/>
+			<report format="frames" todir="${junit.out.dir.html}" />
 		</junitreport>
 	</target>
 
