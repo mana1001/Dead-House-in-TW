@@ -33,7 +33,7 @@ public class AIR_info_test {
 		String air_url = "http://opendata.epa.gov.tw/ws/Data/AQXDaily/?$orderby=MonitorDate%20desc&$skip=0&$top=1000&format=json";
 		air.download_info(air_url);
 		JSONArray air_location_array = new JSONArray(new JSONTokener(new FileReader(
-				new File("WATER_info.json"))));
+				new File("AIR_info.json"))));
 		assertEquals(1000,air_location_array.length());
 	}
 	@Test
