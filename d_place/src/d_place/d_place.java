@@ -143,7 +143,6 @@ public class d_place {
 						if (entry.getValue() < 1)
 							break;
 						line = entry.getKey() + " = " + entry.getValue() + "<br>";
-
 						out.write(line);
 					}
 
