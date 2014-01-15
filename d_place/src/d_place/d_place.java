@@ -149,7 +149,7 @@ public class d_place {
 					out.write(line);
 					out.flush();
 					out.close();
-					System.out.println("All Update Finfish");
+					System.out.println("All Update Finfish")
 
 				} catch (IOException e) {
 					e.printStackTrace();
