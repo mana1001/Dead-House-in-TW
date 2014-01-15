@@ -34,6 +34,7 @@ public class AIR_info_test {
 		air.download_info(air_url);
 		JSONArray air_location_array = new JSONArray(new JSONTokener(new FileReader(
 				new File("AIR_info.json"))));
+		
 		assertEquals(1000,air_location_array.length());
 	}
 	@Test
